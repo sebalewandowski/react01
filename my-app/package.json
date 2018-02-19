@@ -1,0 +1,26 @@
+{
+  "name": "my-app",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "^4.0.0",
+    "dateformat": "^3.0.3",
+    "react": "^16.2.0",
+    "react-bootstrap": "^0.32.1",
+    "react-currency-formatter": "^1.1.0",
+    "react-dom": "^16.2.0",
+    "react-infinite": "^0.12.1",
+    "react-infinite-scroll-component": "^3.0.2",
+    "react-scripts": "1.1.1",
+    "react-simple-infinite-scroll": "0.0.1",
+    "react-time-format": "0.0.5",
+    "sort-by": "^1.2.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "proxy": "http://localhost:3001"
+}
