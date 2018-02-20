@@ -1,9 +1,9 @@
 import React from 'react';
 import logo from './logo.svg';
 import RenderDropDownButton from './components/SortBy';
-import InfiniteScroll from 'react-simple-infinite-scroll'
 import { Button } from 'react-bootstrap';
 import GridComponent from './components/GridComponent';
+import InfiniteScroll from 'react-infinite-scroller';
 import './App.css';
 
 class App extends React.Component {
@@ -14,13 +14,16 @@ class App extends React.Component {
       isLoading: false,
       items: [],
       limit: 10,
+      hasMoreItems: true
     }
     this.sortByPriceAsc = this.sortByPriceAsc.bind(this);
   }
 
-  componentDidMount() {
-    this.setState({ isLoading: true, error: undefined })
-    const url = `/api/products?limit=${this.state.limit}`;
+  fetchData = (page = 1) => {
+    let limit = this.state.limit+10;
+    console.log(page, this.state.limit, limit);
+
+    const url = `/api/products?limit=${limit}`;
     fetch(url)
       .then(response => {
         if (response.ok) {
@@ -42,7 +45,16 @@ class App extends React.Component {
         })
       })
       .catch(error => console.log('parsing failed',error))
+  };
+
+  componentDidMount() {
+    this.setState({ isLoading: true, error: undefined })
+    this.fetchData(1)
   }
+
+  loadItems = (page) => {
+    this.fetchData(page);
+  };
 
   handleEnd = () => {
     this.setState(state => ({limit: state.limit + 20}), () => this.fetch());
@@ -56,28 +68,39 @@ class App extends React.Component {
 
    render() {
     const { items } = this.state;
-     const loader = <div className="loader">Loading...</div>;
-    return (
-
-      <div className="products">
-        <button onClick={this.sortByPriceAsc}>
-          Asc
-        </button>
-       <div className='row'>
-        {items.map((item, index) => {
-          return <GridComponent
+    var tracks = [];
+    const loader = <div className="loader">Loading...</div>;
+    items.map((item, index) => {
+      tracks.push(
+        <GridComponent
             size={item.size}
             price={item.price}
             key={item.id}
             date={item.date}
             src={item.face}
           />
-          }
-        )}
+      )
+    })
+    var element = document.createElement('div');
+    return (
+      <div className="products">
+        <button onClick={this.sortByPriceAsc}>
+          Asc
+        </button>
+       <div className='col-lg-12'>
+          <InfiniteScroll
+              element="div"
+              pageStart={0}
+              loadMore={this.loadItems.bind(this)}
+              hasMore={this.state.hasMoreItems}
+              loader={loader}>
+                  {tracks}
+          </InfiniteScroll>
         </div>
 
       </div>
     );
+
   }
 }
 
